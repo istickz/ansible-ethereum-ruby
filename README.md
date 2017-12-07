@@ -28,8 +28,9 @@ ssh_public_key_files:
 
 Change General settings in `group_vars/all.yml` to your own settings
 
-Initial install:
-Run ```ansible-playbook droplet.yml -i hosts```.
+First install:
+
+```ansible-playbook droplet.yml -i hosts```.
 
 After run droplet.yml you have server without root user login and all commands need your private key
 The rest of the configuration will be through with accounts-service.yml
