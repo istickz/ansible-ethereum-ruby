@@ -1,0 +1,14 @@
+[Unit]
+Description=Parity Dev Daemon
+After=syslog.target
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/parity {{ run_parity_with }}
+User={{deploy_user}}
+Group={{deploy_user}}
+OOMScoreAdjust=-1000
+TimeoutSec=300
+
+[Install]
+WantedBy=multi-user.target 

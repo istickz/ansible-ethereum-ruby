@@ -1,0 +1,12 @@
+[parity]
+# Local Development Chain
+chain = "dev"
+
+[ipc]
+disable = false
+path = "{{ parity_dir }}/jsonrpc.ipc"
+apis = ["web3", "eth", "net", "parity", "parity_accounts", "personal", "traces", "rpc", "secretstore"]
+
+[rpc]
+# Only selected APIs will be exposed over this interface.
+apis = ["web3", "eth", "net", "parity", "traces", "rpc",  "personal"]

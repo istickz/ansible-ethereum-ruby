@@ -1,0 +1,47 @@
+- name: Create parity dir
+  file: path={{ parity_dir }} state=directory owner={{ deploy_user }} group={{ deploy_user }}
+
+- name: Check if Parity is installed
+  command: dpkg-query -l parity
+  register: is_installed
+  changed_when: no
+  failed_when: false
+
+
+- name: download new parity binary
+  get_url:
+    url: "{{ parity_deb_url }}"
+    dest: "/tmp/parity.deb"
+    force: yes
+  tags: update
+  when: is_installed|failed
+
+- name: install parity
+  shell: dpkg -i "/tmp/parity.deb"
+  become: yes
+  tags: update
+  when: is_installed|failed
+
+- name: copy parity dev config file
+  template: src=config-dev.toml dest="{{ parity_dir }}/config.toml" owner={{ deploy_user }} group={{ deploy_user }}
+  tags:
+    - update    
+    
+- name: copy parity service
+  template: src=parity-dev.service dest="/etc/systemd/system/parity-dev.service"
+  when: run_parity_with is defined
+  tags:
+    - update
+
+- name: Enable parity service
+  shell: systemctl enable parity-dev.service 
+  become: yes
+
+- name: Start parity service
+  shell: systemctl start parity-dev.service 
+  become: yes
+
+- name: Reload systemd daemon
+  shell: systemctl daemon-reload
+  become: yes
+

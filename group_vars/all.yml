@@ -1,0 +1,108 @@
+---
+# Server Timzone + Locale
+timezone: Europe/Moscow
+locale: en_US.UTF-8
+
+# Swap
+# Uncommend here and in /roles/common/tasks/main.yml
+swap_enabled: true
+swap_file_path: /swapfile
+swap_file_size_kb: 1024
+
+# General settings
+deploy_dir: /home/deploy/
+deploy_user: deploy
+deploy_password: ''
+deploy_app_name: ''
+postgresql_app_db_password: ''
+deploy_server_hostname: ''
+
+# Parity settings
+parity_dir: /home/deploy/parity
+parity_deb_url: http://parity-downloads-mirror.parity.io/v1.7.0/x86_64-unknown-linux-gnu/parity_1.7.0_amd64.deb
+base_dir: "{{ ansible_env.HOME }}"
+run_parity_with: "--config {{parity_dir}}/config.toml"
+
+# Nginx
+nginx_https_enabled: true
+
+# Certbot
+certbot_url: https://dl.eff.org/certbot-auto
+certbot_dir: /opt/certbot
+certbot_email: test@example.com
+
+# Authorized Hosts
+# This copies your local public key to the remote machine
+# for passwordless login. Modify this!
+ssh_public_key_files:
+  - "./group_vars/public_keys/some_key_example"
+
+# Postgresql
+
+# - Archiving -
+# allows archiving to be done
+postgresql_archive_mode: on
+postgresql_archive_command: 'test ! -f /tmp/%f && cp %p /tmp/%f'
+
+# force a logfile segment switch after this
+postgresql_archive_timeout: 30min
+postgresql_checkpoint_timeout:   30min  # range 30s-1d
+monit_protection: true
+postgresql_version: 9.6
+postgresql_encoding: 'UTF-8'
+postgresql_locale: 'en_US.UTF-8'
+postgresql_ctype: 'en_US.UTF-8'
+postgresql_shared_buffers: 250MB
+postgresql_max_connections: 200
+postgresql_wal_level: hot_standby
+postgresql_checkpoint_completion_target: 0.9
+postgresql_max_wal_senders: 5
+
+# List of databases to be created (optional)
+# Note: for more flexibility with extensions use the postgresql_database_extensions setting.
+postgresql_databases:
+  - name: deploy
+    owner: deploy         # optional; specify the owner of the database
+
+  - name: accounts_service
+    owner: deploy         # optional; specify the owner of the database
+
+postgresql_database_extensions:
+  - db: accounts_service
+    extensions:
+      - hstore
+      - citext
+
+# NodeJS
+nodejs_version: "6.x"
+
+# List of users to be created (optional)
+postgresql_users:
+  - name: deploy
+    pass: uy@naubw7681Aw!89
+    encrypted: no       # denotes if the password is already encrypted.
+
+# List of user privileges to be applied (optional)
+postgresql_user_privileges:
+  - name: deploy                  # user name
+    db: accounts_service                 # database
+    priv: "ALL"                 # privilege string format: example: INSERT,UPDATE/table:SELECT/anothertable:ALL
+    role_attr_flags: "SUPERUSER" # role attribute flags
+
+# Ruby
+ruby_install_version: 0.6.1
+chruby_version: 0.3.9
+ruby_version: 2.4.1
+
+# Rails
+rails_secret_key_base: SOME_KEY_EXAMPLE
+puma_workers: 2
+puma_threads: 2,8
+
+
+# Monit 
+
+monit_email_enable: no
+
+
+
